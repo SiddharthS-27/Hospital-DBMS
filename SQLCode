@@ -1,0 +1,189 @@
+-- Table structure for table `appointment`
+DROP TABLE IF EXISTS `appointment`;
+CREATE TABLE `appointment` (
+  `appointment_id` int NOT NULL,
+  `appointment_date` date NOT NULL,
+  `appointment_time` time DEFAULT NULL,
+  `doctor_id` int DEFAULT NULL,
+  `patient_id` int NOT NULL,
+  `status` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`appointment_id`)
+);
+
+-- Table structure for table `department`
+DROP TABLE IF EXISTS `department`;
+CREATE TABLE `department` (
+  `DEPARTMENT_ID` int NOT NULL,
+  `LOCATION` varchar(20) DEFAULT NULL,
+  `DEPARTMENT_NAME` varchar(20) DEFAULT NULL,
+  `DESCRIPITION` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`DEPARTMENT_ID`)
+);
+
+-- Table structure for table `emergency_care`
+DROP TABLE IF EXISTS `emergency_care`;
+CREATE TABLE `emergency_care` (
+  `EMERGENCY_TYPE` varchar(50) DEFAULT NULL,
+  `CONDITION_ON_ARRIVAL` varchar(100) DEFAULT NULL,
+  `ARRIVAL_TIME` time DEFAULT NULL,
+  `PATIENT_ID` int DEFAULT NULL,
+  `TREATMENT_GIVEN` varchar(50) DEFAULT NULL,
+  `EMERGENCY_ID` int NOT NULL,
+  `ASSIGNED_STAFF_ID` int NOT NULL,
+  `OUTCOME` varchar(50) DEFAULT NULL,
+  `RESOURCES_USED` varchar(50) DEFAULT NULL,
+  `NOTES` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`EMERGENCY_ID`),
+  KEY `PATIENT_ID` (`PATIENT_ID`),
+  CONSTRAINT `emergency_care_ibfk_1` FOREIGN KEY (`PATIENT_ID`) REFERENCES `patient` (`PATIENT_ID`)
+);
+
+-- Table structure for table `equipment`
+DROP TABLE IF EXISTS `equipment`;
+CREATE TABLE `equipment` (
+  `PURCHASE_DATE` date DEFAULT NULL,
+  `NAME` varchar(20) DEFAULT NULL,
+  `EQUIPMENT_ID` int NOT NULL,
+  `TYPE` varchar(20) DEFAULT NULL,
+  `NEXT_MAINTAINENCE` varchar(50) DEFAULT NULL,
+  `AGE` int DEFAULT NULL,
+  `NOTES` varchar(50) DEFAULT NULL,
+  `STAFF_ID` int DEFAULT NULL,
+  `DEPARTMENT_ID` int DEFAULT NULL,
+  `STATUS` varchar(20) DEFAULT NULL,
+  `LAST_MAINTAINENCE` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`EQUIPMENT_ID`),
+  KEY `FK_STAFF_ID` (`STAFF_ID`),
+  CONSTRAINT `FK_STAFF_ID` FOREIGN KEY (`STAFF_ID`) REFERENCES `staff` (`STAFF_ID`)
+);
+
+-- Table structure for table `hospital_bill`
+DROP TABLE IF EXISTS `hospital_bill`;
+CREATE TABLE `hospital_bill` (
+  `BILL_ID` int NOT NULL,
+  `PATIENT_ID` int NOT NULL,
+  `AMOUNT` int DEFAULT NULL,
+  `PAYMENT_STATUS` varchar(10) DEFAULT NULL,
+  `BILL_DATE` date DEFAULT NULL,
+  PRIMARY KEY (`BILL_ID`)
+);
+
+-- Table structure for table `lab_test`
+DROP TABLE IF EXISTS `lab_test`;
+CREATE TABLE `lab_test` (
+  `BILL_ID` int DEFAULT NULL,
+  `TEST_ID` int DEFAULT NULL,
+  `NAME` varchar(20) DEFAULT NULL,
+  `COST` int DEFAULT NULL,
+  KEY `BILL_ID` (`BILL_ID`),
+  KEY `TEST_ID` (`TEST_ID`),
+  CONSTRAINT `lab_test_ibfk_1` FOREIGN KEY (`BILL_ID`) REFERENCES `hospital_bill` (`BILL_ID`),
+  CONSTRAINT `lab_test_ibfk_2` FOREIGN KEY (`TEST_ID`) REFERENCES `test_result` (`TEST_ID`)
+);
+
+-- Table structure for table `medical_history`
+DROP TABLE IF EXISTS `medical_history`;
+CREATE TABLE `medical_history` (
+  `allergy_information` varchar(50) DEFAULT NULL,
+  `HPI` varchar(100) DEFAULT NULL,
+  `PAST_MEDICAL_HISTORY` varchar(50) DEFAULT NULL,
+  `PATIENT_ID` int DEFAULT NULL,
+  `MEDICATION_HISTORY` varchar(100) DEFAULT NULL,
+  KEY `PATIENT_ID` (`PATIENT_ID`),
+  CONSTRAINT `medical_history_ibfk_1` FOREIGN KEY (`PATIENT_ID`) REFERENCES `patient` (`PATIENT_ID`)
+);
+
+-- Table structure for table `patient`
+DROP TABLE IF EXISTS `patient`;
+CREATE TABLE `patient` (
+  `NAME` varchar(20) DEFAULT NULL,
+  `AGE` int NOT NULL,
+  `GENDER` varchar(10) DEFAULT NULL,
+  `CONTACT_NUMBER` varchar(20) DEFAULT NULL,
+  `ADDRESS` varchar(100) DEFAULT NULL,
+  `PATIENT_ID` int NOT NULL,
+  PRIMARY KEY (`PATIENT_ID`)
+);
+
+-- Table structure for table `staff`
+DROP TABLE IF EXISTS `staff`;
+CREATE TABLE `staff` (
+  `STAFF_ID` int NOT NULL,
+  `ROLE` varchar(20) DEFAULT NULL,
+  `SCHEDULE` varchar(20) DEFAULT NULL,
+  `NAME` varchar(20) DEFAULT NULL,
+  `CONTACT` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`STAFF_ID`)
+);
+
+-- Table structure for table `supplies`
+DROP TABLE IF EXISTS `supplies`;
+CREATE TABLE `supplies` (
+  `PURCHASE_DATE` date DEFAULT NULL,
+  `LAST_UPDATED` date DEFAULT NULL,
+  `EXPIRY_DATE` date DEFAULT NULL,
+  `NOTES` varchar(100) DEFAULT NULL,
+  `DEPARTMENT_ID` int DEFAULT NULL,
+  `SUPPLY_ID` int NOT NULL,
+  `NAME` varchar(20) DEFAULT NULL,
+  `CATEGORY` varchar(20) DEFAULT NULL,
+  `STATUS` varchar(20) DEFAULT NULL,
+  `SUPPLIER_INFO` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`SUPPLY_ID`)
+);
+
+-- Table structure for table `test_result`
+DROP TABLE IF EXISTS `test_result`;
+CREATE TABLE `test_result` (
+  `TEST_DATE` date DEFAULT NULL,
+  `PATIENT_ID` int DEFAULT NULL,
+  `RESULT` varchar(100) DEFAULT NULL,
+  `TEST_ID` int NOT NULL,
+  PRIMARY KEY (`TEST_ID`),
+  KEY `PATIENT_ID` (`PATIENT_ID`),
+  CONSTRAINT `test_result_ibfk_1` FOREIGN KEY (`PATIENT_ID`) REFERENCES `patient` (`PATIENT_ID`)
+);
+
+-- Table structure for table `user`
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE `user` (
+  `ROLE` varchar(20) DEFAULT NULL,
+  `PASSWORD` varchar(20) DEFAULT NULL,
+  `USERNAME` varchar(20) DEFAULT NULL,
+  `USER_ID` int DEFAULT NULL,
+  `STAFF_ID` int DEFAULT NULL,
+  KEY `STAFF_ID` (`STAFF_ID`),
+  CONSTRAINT `user_ibfk_1` FOREIGN KEY (`STAFF_ID`) REFERENCES `staff` (`STAFF_ID`)
+);
+-- Table structure for table `Pharmacy_Bill`
+DROP TABLE IF EXISTS `Pharmacy_Bill`;
+CREATE TABLE `Pharmacy_Bill` (
+  `issue_id` INT PRIMARY KEY,
+  `issue_date` DATE NOT NULL,
+  `quantity_issued` INT NOT NULL,
+  `medicine_id` INT,
+  `patient_id` INT,
+  FOREIGN KEY (`medicine_id`) REFERENCES `Pharmacy` (`MEDICINE_ID`),
+  FOREIGN KEY (`patient_id`) REFERENCES `Patient` (`PATIENT_ID`)
+);
+
+-- Table structure for table `Pharmacy`
+DROP TABLE IF EXISTS `Pharmacy`;
+CREATE TABLE `Pharmacy` (
+  `MEDICINE_ID` INT PRIMARY KEY,
+  `DRUG_NAME` VARCHAR(30) NOT NULL,
+  `STOCK_QUANTITY` INT NOT NULL,
+  `DRUG_CATEGORY` VARCHAR(50) NOT NULL
+);
+
+-- Table structure for table `Medicine`
+DROP TABLE IF EXISTS `Medicine`;
+CREATE TABLE `Medicine` (
+  `medicine_id` INT PRIMARY KEY,
+  `name` VARCHAR(100) NOT NULL,
+  `price_per_unit` DECIMAL(10, 2),
+  `quantity` INT NOT NULL,
+  `manufacturing_date` DATE,
+  `expiry_date` DATE
+);
+
